@@ -1,0 +1,26 @@
+# Backend
+/backend/vendor
+/backend/.env
+/backend/.env.backup
+/backend/.env.production
+/backend/.phpunit.cache
+/backend/.phpunit.result.cache
+/backend/public/storage
+/backend/storage/*.key
+
+# Frontend
+/frontend/node_modules
+/frontend/dist
+/frontend/dist-demo
+/frontend/.env
+/frontend/.env.local
+
+# Divers
+.DS_Store
+/.idea
+/.vscode
+npm-debug.log
+# Générés au build
+/frontend/public/sitemap.xml
+/frontend/public/robots.txt
+/frontend/public/feeds
