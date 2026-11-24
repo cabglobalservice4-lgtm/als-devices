@@ -37,7 +37,8 @@ export function ShopProvider({ children }) {
 
     usePixels(config?.shop?.tracking, location.pathname);
 
-    const notify = useCallback((text, type = 'ok') => setToast(text ? { text, type, id: Date.now() } : null), []);
+    // action facultative : { href, label } — un lien affiché dans la notification (ex. « Voir le panier »)
+    const notify = useCallback((text, type = 'ok', action = null) => setToast(text ? { text, type, action, id: Date.now() } : null), []);
 
     const cartApi = useMemo(() => ({
         items: cart,

@@ -45,7 +45,7 @@ export default function ProductShow({ product, reviews, related, grades }) {
         track('AddToCart', { content_ids: [variant.sku], value: variant.price * qty, currency: shop.currency });
         cart.add(variant.id, qty, product.is_unique ? 1 : Math.min(variant.stock, 20));
         if (buyNow) router.visit(route('checkout.create'));
-        else notify(`${product.name} ajouté au panier.`);
+        else notify(`${product.name} ajouté au panier.`, 'ok', { href: route('cart.index'), label: 'Voir le panier' });
     };
 
     const label = [variant?.storage, variant?.color].filter(Boolean).join(' · ');
@@ -105,7 +105,7 @@ export default function ProductShow({ product, reviews, related, grades }) {
                         {images && images.length > 1 && (
                             <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
                                 {images.map((im, i) => (
-                                    <button key={i} onClick={() => setImg(i)} aria-label={`Photo ${i + 1}`} className={cx('h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-bone', i === img ? 'border-ink' : 'border-transparent')}>
+                                    <button key={i} onClick={() => setImg(i)} aria-label={`Photo ${i + 1}`} className={cx('h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 bg-bone', i === img ? 'border-ink' : 'border-transparent')}>
                                         <img src={im.url} alt="" className="h-full w-full object-contain p-1.5 mix-blend-multiply" loading="lazy" />
                                     </button>
                                 ))}
@@ -146,7 +146,7 @@ export default function ProductShow({ product, reviews, related, grades }) {
 
                     {colors.length > 0 && (
                         <fieldset className="mt-6">
-                            <legend className="eyebrow mb-3 text-graphite">Couleur · <span className="text-ink">{color}</span></legend>
+                            <legend className="eyebrow mb-3 text-graphite">Couleur : <span className="text-ink">{color}</span></legend>
                             <div className="flex flex-wrap gap-3">
                                 {colors.map((c) => {
                                     const possible = exists(storage, c.name) || !storages.length;
@@ -226,10 +226,10 @@ export default function ProductShow({ product, reviews, related, grades }) {
                     <h2 className="h-display text-3xl">Avis clients</h2>
                     <div className="mt-6 grid gap-4 md:grid-cols-3">
                         {reviews.map((r, i) => (
-                            <figure key={i} className="rounded-2xl bg-bone p-5">
+                            <figure key={i} className="border-l-4 border-als bg-bone p-5">
                                 <div className="flex gap-0.5 text-als">{Array.from({ length: r.rating }).map((_, k) => <Icon key={k} name="star" className="h-4 w-4 fill-current" />)}</div>
                                 <blockquote className="mt-3 text-sm leading-relaxed">« {r.body} »</blockquote>
-                                <figcaption className="eyebrow mt-4 text-graphite">{r.author}</figcaption>
+                                <figcaption className="mt-4 text-sm font-semibold">{r.author}</figcaption>
                             </figure>
                         ))}
                     </div>

@@ -41,7 +41,7 @@ export default function CatalogIndex({ category, products, filters, facets }) {
                 {filters.condition !== 'new' && (
                     <div className="mt-3 flex gap-2">
                         {['A', 'B', 'C'].map((g) => (
-                            <button key={g} onClick={() => toggle('grade', g)} className={cx('chip font-mono', filters.grade?.includes(g) && 'chip-on')}>Grade {g}</button>
+                            <button key={g} onClick={() => toggle('grade', g)} className={cx('chip', filters.grade?.includes(g) && 'chip-on')}>Grade {g}</button>
                         ))}
                     </div>
                 )}
@@ -64,7 +64,7 @@ export default function CatalogIndex({ category, products, filters, facets }) {
                 <Facet title="Stockage">
                     <div className="flex flex-wrap gap-2">
                         {facets.storages.map((s) => (
-                            <button key={s} onClick={() => toggle('storage', s)} className={cx('chip font-mono text-[13px]', filters.storage?.includes(s) && 'chip-on')}>{s}</button>
+                            <button key={s} onClick={() => toggle('storage', s)} className={cx('chip text-[13px]', filters.storage?.includes(s) && 'chip-on')}>{s}</button>
                         ))}
                     </div>
                 </Facet>
@@ -74,7 +74,7 @@ export default function CatalogIndex({ category, products, filters, facets }) {
                 <PriceRange min={filters.min} max={filters.max} ceiling={facets.price_max} onApply={(min, max) => apply({ min, max })} money={money} />
             </Facet>
 
-            <label className="flex cursor-pointer items-center justify-between rounded-xl bg-bone px-4 py-3">
+            <label className="flex cursor-pointer items-center justify-between rounded-lg bg-bone px-4 py-3">
                 <span className="text-[15px] font-medium">En stock uniquement</span>
                 <input type="checkbox" checked={!!filters.stock} onChange={(e) => apply({ stock: e.target.checked ? 1 : '' })} className="h-5 w-5 rounded border-bone-300 text-als focus:ring-0" />
             </label>
@@ -113,12 +113,12 @@ export default function CatalogIndex({ category, products, filters, facets }) {
 
                 <div>
                     <div className="flex items-center justify-between gap-3">
-                        <p className="font-mono text-sm text-graphite">{products.total} appareil{products.total > 1 ? 's' : ''}</p>
+                        <p className="text-sm font-semibold text-graphite">{products.total} appareil{products.total > 1 ? 's' : ''}</p>
                         <div className="flex items-center gap-2">
-                            <button onClick={() => setDrawer(true)} className="chip lg:hidden"><Icon name="filter" className="h-4 w-4" /> Filtres{activeCount > 0 && <span className="grid h-5 w-5 place-items-center rounded-full bg-als font-mono text-[11px] text-white">{activeCount}</span>}</button>
+                            <button onClick={() => setDrawer(true)} className="chip lg:hidden"><Icon name="filter" className="h-4 w-4" /> Filtres{activeCount > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-als px-1 text-[11px] font-bold text-white">{activeCount}</span>}</button>
                             <label className="relative">
                                 <span className="sr-only">Trier</span>
-                                <select value={filters.sort} onChange={(e) => apply({ sort: e.target.value })} className="appearance-none rounded-full border-bone-300 py-1.5 pl-3 pr-9 text-sm focus:border-ink focus:ring-0">
+                                <select value={filters.sort} onChange={(e) => apply({ sort: e.target.value })} className="rounded-md border-bone-300 py-1.5 pl-3 pr-9 text-sm font-medium focus:border-ink focus:ring-0">
                                     {Object.entries(sorts).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                                 </select>
                             </label>
@@ -126,7 +126,21 @@ export default function CatalogIndex({ category, products, filters, facets }) {
                     </div>
 
                     {activeCount > 0 && (
-                        <button onClick={() => router.get(baseUrl, filters.q ? { q: filters.q } : {})} className="mt-3 text-sm font-medium text-als underline-offset-4 hover:underline">Effacer les filtres</button>
+                        <div className="mt-4 flex flex-wrap items-center gap-2">
+                            {[
+                                filters.condition && [filters.condition === 'new' ? 'Neuf' : 'Reconditionné', { condition: '', grade: [] }],
+                                ...(filters.grade ?? []).map((g) => [`Grade ${g}`, { grade: filters.grade.filter((x) => x !== g) }]),
+                                ...(filters.brand ?? []).map((b) => [facets.brands.find((x) => x.slug === b)?.name ?? b, { brand: filters.brand.filter((x) => x !== b) }]),
+                                ...(filters.storage ?? []).map((s) => [s, { storage: filters.storage.filter((x) => x !== s) }]),
+                                (filters.min || filters.max) && [filters.max ? (filters.min ? `${money(filters.min)} à ${money(filters.max)}` : `Moins de ${money(filters.max)}`) : `Plus de ${money(filters.min)}`, { min: '', max: '' }],
+                                filters.stock && ['En stock', { stock: '' }],
+                            ].filter(Boolean).map(([label, next]) => (
+                                <button key={label} onClick={() => apply(next)} className="inline-flex items-center gap-1.5 rounded-md bg-ink py-1.5 pl-3 pr-2 text-sm font-medium text-white hover:bg-als" aria-label={`Retirer le filtre ${label}`}>
+                                    {label}<Icon name="close" className="h-3.5 w-3.5" />
+                                </button>
+                            ))}
+                            <button onClick={() => router.get(baseUrl, filters.q ? { q: filters.q } : {})} className="px-1 text-sm font-semibold underline decoration-2 underline-offset-4 hover:text-als">Tout effacer</button>
+                        </div>
                     )}
 
                     {products.data.length ? (
@@ -134,9 +148,9 @@ export default function CatalogIndex({ category, products, filters, facets }) {
                             {products.data.map((p, i) => <ProductCard key={p.id} product={p} priority={i < 4} />)}
                         </div>
                     ) : (
-                        <div className="mt-6 rounded-3xl border border-dashed border-bone-300 px-6 py-20 text-center">
-                            <p className="font-display text-3xl font-bold tracking-tight">Rien ne correspond… pour l'instant.</p>
-                            <p className="mt-2 text-graphite">Élargissez vos filtres, ou demandez-nous : on peut souvent le trouver.</p>
+                        <div className="mt-6 rounded-xl bg-bone px-6 py-16 text-center">
+                            <p className="font-display text-4xl font-black leading-none tracking-tight">Aucun appareil ne correspond.</p>
+                            <p className="mt-2 text-graphite">Retirez un filtre, ou demandez-nous sur WhatsApp : on peut souvent le trouver.</p>
                             <button onClick={() => router.get(baseUrl)} className="btn-ink mt-6">Voir tout le rayon</button>
                         </div>
                     )}
@@ -147,10 +161,10 @@ export default function CatalogIndex({ category, products, filters, facets }) {
             {/* Tiroir de filtres mobile */}
             <div className={cx('fixed inset-0 z-50 lg:hidden', drawer ? 'visible' : 'invisible')}>
                 <div onClick={() => setDrawer(false)} className={cx('absolute inset-0 bg-ink/50 transition', drawer ? 'opacity-100' : 'opacity-0')} />
-                <div className={cx('absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-3xl bg-white p-5 transition-transform', drawer ? 'translate-y-0' : 'translate-y-full')}>
+                <div className={cx('absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-xl bg-white p-5 transition-transform', drawer ? 'translate-y-0' : 'translate-y-full')}>
                     <div className="mb-6 flex items-center justify-between">
-                        <p className="font-display text-2xl font-bold">Filtres</p>
-                        <button onClick={() => setDrawer(false)} className="grid h-10 w-10 place-items-center rounded-full bg-bone" aria-label="Fermer"><Icon name="close" /></button>
+                        <p className="font-display text-3xl font-black leading-none tracking-tight">Filtres</p>
+                        <button onClick={() => setDrawer(false)} className="grid h-10 w-10 place-items-center rounded-lg bg-bone" aria-label="Fermer les filtres"><Icon name="close" /></button>
                     </div>
                     {panel}
                     <button onClick={() => setDrawer(false)} className="btn-ink sticky bottom-0 mt-8 w-full py-4">Voir {products.total} résultat{products.total > 1 ? 's' : ''}</button>
@@ -187,7 +201,7 @@ function PriceRange({ min, max, ceiling, onApply, money }) {
                 <input inputMode="numeric" value={lo} onChange={(e) => setLo(e.target.value.replace(/\D/g, ''))} placeholder="Min" aria-label="Prix minimum" className="field py-2 text-sm" />
                 <span className="text-graphite">–</span>
                 <input inputMode="numeric" value={hi} onChange={(e) => setHi(e.target.value.replace(/\D/g, ''))} placeholder="Max" aria-label="Prix maximum" className="field py-2 text-sm" />
-                <button className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink text-white" aria-label="Appliquer"><Icon name="arrow" className="h-4 w-4" /></button>
+                <button className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-ink text-white" aria-label="Appliquer le budget"><Icon name="arrow" className="h-4 w-4" /></button>
             </form>
         </div>
     );

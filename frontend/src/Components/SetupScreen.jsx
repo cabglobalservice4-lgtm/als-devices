@@ -8,7 +8,7 @@ export default function SetupScreen() {
         <div className="grid min-h-screen place-items-center bg-ink p-6 text-white">
             <div className="w-full max-w-xl">
                 <p className="eyebrow text-als">Configuration incomplète</p>
-                <h1 className="h-display mt-3 text-4xl md:text-5xl">Le site n'est pas encore relié à Supabase<span className="text-als">.</span></h1>
+                <h1 className="h-display mt-3 text-4xl md:text-5xl">Le site n'est pas encore relié à Supabase</h1>
                 <p className="mt-4 text-white/70">Ajoutez ces deux variables dans <b>Vercel › Settings › Environment Variables</b>, puis lancez <b>Redeploy</b> (sans le cache) :</p>
                 <dl className="mt-6 space-y-3">
                     {rows.map(([k, v]) => (

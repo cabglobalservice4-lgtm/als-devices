@@ -54,10 +54,10 @@ export default function Checkout({ lines, subtotal, zones, pickupEnabled, paymen
             <form onSubmit={submit} className="container-als grid gap-10 py-10 md:py-14 lg:grid-cols-12">
                 <div className="lg:col-span-7">
                     <Link href={route('cart.index')} className="text-sm font-semibold text-graphite hover:text-ink">← Retour au panier</Link>
-                    <h1 className="h-display mt-3 text-5xl">Commande<span className="text-als">.</span></h1>
-                    <p className="mt-2 text-graphite">Pas besoin de compte. Trois infos et c'est réglé.</p>
+                    <h1 className="h-display mt-3 text-6xl md:text-7xl">Commande</h1>
+                    <p className="mt-2 text-graphite">Pas besoin de compte : trois étapes et c'est envoyé.</p>
 
-                    {errors.cart && <p className="mt-6 rounded-xl bg-als-light px-4 py-3 text-sm text-als-dark">{errors.cart}</p>}
+                    {errors.cart && <p className="mt-6 rounded-lg bg-als-light px-4 py-3 text-sm text-als-dark">{errors.cart}</p>}
 
                     <Step n="1" title="Vos coordonnées">
                         <div className="grid gap-4 sm:grid-cols-2">
@@ -86,17 +86,33 @@ export default function Checkout({ lines, subtotal, zones, pickupEnabled, paymen
                         )}
                         {data.delivery_method === 'delivery' ? (
                             <div className="grid gap-4">
-                                <Field label="Zone de livraison" error={errors.delivery_zone_id}>
-                                    <select className="field" value={data.delivery_zone_id} onChange={(e) => setData('delivery_zone_id', Number(e.target.value))}>
-                                        {zones.map((z) => <option key={z.id} value={z.id}>{z.name} — {money(z.fee)}{z.delay ? ` · ${z.delay}` : ''}</option>)}
-                                    </select>
-                                </Field>
+                                {zones.length <= 6 ? (
+                                    // Peu de zones : cartes cliquables, prix et délai visibles d'un coup d'œil
+                                    <fieldset>
+                                        <legend className="label">Zone de livraison</legend>
+                                        <div className="grid gap-2 sm:grid-cols-2">
+                                            {zones.map((z) => (
+                                                <Choice key={z.id} checked={Number(data.delivery_zone_id) === z.id} onChange={() => setData('delivery_zone_id', z.id)} name="delivery_zone_id" compact>
+                                                    <span className="font-semibold">{z.name}</span>
+                                                    <span className="text-sm text-graphite">{Number(z.fee) ? money(z.fee) : 'Gratuit'}{z.delay ? `, ${z.delay}` : ''}</span>
+                                                </Choice>
+                                            ))}
+                                        </div>
+                                        {errors.delivery_zone_id && <p className="error">{errors.delivery_zone_id}</p>}
+                                    </fieldset>
+                                ) : (
+                                    <Field label="Zone de livraison" error={errors.delivery_zone_id}>
+                                        <select className="field" value={data.delivery_zone_id} onChange={(e) => setData('delivery_zone_id', Number(e.target.value))}>
+                                            {zones.map((z) => <option key={z.id} value={z.id}>{z.name} : {money(z.fee)}{z.delay ? `, ${z.delay}` : ''}</option>)}
+                                        </select>
+                                    </Field>
+                                )}
                                 <Field label="Adresse précise" error={errors.address}>
                                     <input className="field" autoComplete="street-address" placeholder="Quartier, rue, repère…" value={data.address} onChange={(e) => setData('address', e.target.value)} />
                                 </Field>
                             </div>
                         ) : (
-                            <p className="rounded-xl bg-bone px-4 py-3 text-sm">Nous vous appelons pour convenir du lieu et de l'heure. {shop.address} · {shop.hours}</p>
+                            <p className="rounded-lg bg-bone px-4 py-3 text-sm">Nous vous appelons pour convenir du lieu et de l'heure. {shop.address} · {shop.hours}</p>
                         )}
                         <Field label="Précision pour le livreur" hint="facultatif" error={errors.notes} className="mt-4">
                             <textarea className="field" rows={2} value={data.notes} onChange={(e) => setData('notes', e.target.value)} />
@@ -117,12 +133,12 @@ export default function Checkout({ lines, subtotal, zones, pickupEnabled, paymen
                 </div>
 
                 <aside className="lg:col-span-5">
-                    <div className="sticky top-24 rounded-3xl border border-bone-200 p-6">
-                        <p className="eyebrow text-graphite">Votre commande</p>
+                    <div className="sticky top-24 rounded-xl border-2 border-ink p-6">
+                        <p className="font-display text-3xl font-black leading-none tracking-tight">Votre commande</p>
                         <ul className="mt-4 space-y-4">
                             {lines.map((l) => (
                                 <li key={l.variant_id} className="flex gap-3">
-                                    <div className="relative h-16 w-16 shrink-0 rounded-xl bg-bone">
+                                    <div className="relative h-16 w-16 shrink-0 rounded-lg bg-bone">
                                         {l.image ? <img src={l.image} alt="" className="h-full w-full object-contain p-1.5 mix-blend-multiply" /> : <div className="h-full p-2"><DeviceArt type={l.category_icon} /></div>}
                                         <span className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-ink font-mono text-[11px] text-white">{l.quantity}</span>
                                     </div>
@@ -137,7 +153,7 @@ export default function Checkout({ lines, subtotal, zones, pickupEnabled, paymen
                         <dl className="mt-6 space-y-2 border-t border-bone-200 pt-4 text-sm">
                             <div className="flex justify-between"><dt className="text-graphite">Sous-total</dt><dd>{money(subtotal)}</dd></div>
                             <div className="flex justify-between"><dt className="text-graphite">Livraison</dt><dd>{fee ? money(fee) : 'Gratuit'}</dd></div>
-                            <div className="flex items-baseline justify-between border-t border-bone-200 pt-3"><dt className="font-semibold">Total</dt><dd className="font-display text-3xl font-extrabold tracking-tight">{money(total)}</dd></div>
+                            <div className="flex items-baseline justify-between border-t border-bone-200 pt-3"><dt className="font-semibold">Total</dt><dd className="font-display text-4xl font-black leading-none tracking-tight">{money(total)}</dd></div>
                         </dl>
                         <label className="mt-6 flex cursor-pointer items-start gap-3 text-sm">
                             <input type="checkbox" checked={data.accept_terms} onChange={(e) => setData('accept_terms', e.target.checked)} className="mt-0.5 h-5 w-5 rounded border-bone-300 text-als focus:ring-0" />
@@ -145,7 +161,7 @@ export default function Checkout({ lines, subtotal, zones, pickupEnabled, paymen
                         </label>
                         {errors.accept_terms && <p className="error">{errors.accept_terms}</p>}
                         <button disabled={processing} className="btn-red mt-6 w-full py-4 text-base">
-                            {processing ? 'Envoi…' : `Confirmer la commande · ${money(total)}`}
+                            {processing ? "Envoi de la commande…" : `Confirmer la commande (${money(total)})`}
                         </button>
                         <p className="mt-3 text-center text-xs text-graphite">Vous recevez votre numéro de commande immédiatement. Nous vous appelons pour confirmer.</p>
                     </div>
@@ -158,8 +174,8 @@ export default function Checkout({ lines, subtotal, zones, pickupEnabled, paymen
 function Step({ n, title, children }) {
     return (
         <section className="mt-10">
-            <h2 className="mb-5 flex items-center gap-3 font-display text-2xl font-bold tracking-tight">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-ink font-mono text-sm text-white">{n}</span>{title}
+            <h2 className="mb-5 flex items-center gap-3 font-display text-3xl font-black leading-none tracking-tight">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-als font-sans text-base font-bold text-white">{n}</span>{title}
             </h2>
             {children}
         </section>
@@ -176,12 +192,12 @@ function Field({ label, hint, error, className = '', children }) {
     );
 }
 
-function Choice({ checked, onChange, name, row = false, children }) {
+function Choice({ checked, onChange, name, row = false, compact = false, children }) {
     return (
-        <label className={cx('relative flex cursor-pointer gap-2 rounded-2xl border-2 p-4 transition', row ? 'items-center gap-4' : 'flex-col', checked ? 'border-ink bg-bone' : 'border-bone-200 hover:border-bone-300')}>
+        <label className={cx('relative flex cursor-pointer rounded-lg border-2 transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-als', compact ? 'flex-col gap-0.5 py-3 pl-4 pr-11' : 'gap-2 p-4', row ? 'items-center gap-4' : 'flex-col', checked ? 'border-ink bg-bone' : 'border-bone-200 hover:border-bone-300')}>
             <input type="radio" name={name} checked={checked} onChange={onChange} className="sr-only" />
             {children}
-            <span className={cx('absolute right-4 top-4 grid h-5 w-5 place-items-center rounded-full border-2', checked ? 'border-als bg-als' : 'border-bone-300', row && 'static')}>
+            <span className={cx('absolute right-4 grid h-5 w-5', compact ? 'top-1/2 -translate-y-1/2' : 'top-4', ' place-items-center rounded-full border-2', checked ? 'border-als bg-als' : 'border-bone-300', row && 'static')}>
                 {checked && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
             </span>
         </label>
@@ -189,7 +205,7 @@ function Choice({ checked, onChange, name, row = false, children }) {
 }
 
 function PayLogo({ method }) {
-    if (method === 'wave') return <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#1DC8FF] font-display text-sm font-extrabold text-white">W</span>;
-    if (method === 'orange_money') return <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#FF7900] font-display text-sm font-extrabold text-white">OM</span>;
-    return <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-ink text-white"><Icon name="cash" /></span>;
+    if (method === 'wave') return <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#1DC8FF] font-display text-sm font-extrabold text-white">W</span>;
+    if (method === 'orange_money') return <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#FF7900] font-display text-sm font-extrabold text-white">OM</span>;
+    return <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-ink text-white"><Icon name="cash" /></span>;
 }

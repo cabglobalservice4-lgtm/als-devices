@@ -17,7 +17,7 @@ export default class ErrorBoundary extends Component {
         return (
             <div className="grid min-h-screen place-items-center bg-white p-6 text-center">
                 <div>
-                    <p className="h-display text-5xl">Oups<span className="text-als">.</span></p>
+                    <p className="h-display text-5xl">Oups</p>
                     <p className="mt-3 text-graphite">Un problème d'affichage est survenu sur cette page.</p>
                     <div className="mt-6 flex justify-center gap-3">
                         <button onClick={() => window.location.reload()} className="btn-ink">Recharger</button>
