@@ -20,7 +20,3 @@
 /.idea
 /.vscode
 npm-debug.log
-# Générés au build
-/frontend/public/sitemap.xml
-/frontend/public/robots.txt
-/frontend/public/feeds

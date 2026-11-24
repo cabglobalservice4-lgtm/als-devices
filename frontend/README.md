@@ -6,7 +6,8 @@ React 18, Vite, React Router, Tailwind CSS, `@supabase/supabase-js`. Voir le [RE
 npm install
 cp .env.example .env
 npm run dev        # http://localhost:5173
-npm run build      # dist/ (+ sitemap.xml, robots.txt, feeds/facebook.csv)
+npm test           # tests automatiques
+npm run build      # dist/ + pages pré-rendues, sitemap.xml, robots.txt, feeds/facebook.csv
 ```
 
 ## Organisation
@@ -24,9 +25,11 @@ src/
 │   ├── kit.jsx         liens, navigation, formulaires
 │   ├── page.jsx        chargement des données d'une page
 │   ├── markdown.js     texte des pages
+│   ├── image.js        réduction des photos avant envoi
 │   └── format.js       prix (FCFA / €), liens WhatsApp, suivi publicitaire
 ├── Layouts/  Components/  Pages/  css/
-scripts/build-seo.mjs   sitemap + flux Facebook au moment du build
+scripts/build-seo.mjs   après vite build : pages pré-rendues (SEO, aperçus WhatsApp), sitemap, flux Facebook
+src/__tests__/          tests (vitest)
 ```
 
 Couleurs et polices : `tailwind.config.js` (`ink` = noir, `als` = rouge, `bone` = blanc cassé ; titres Bricolage Grotesque, texte Geist).

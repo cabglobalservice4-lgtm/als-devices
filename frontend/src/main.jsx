@@ -2,13 +2,16 @@ import './css/app.css';
 
 import { lazy, StrictMode, Suspense, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ShopProvider, useShop } from '@/lib/shop';
-import { AuthProvider } from '@/lib/auth';
+import { AuthProvider, useAuth } from '@/lib/auth';
 import { api } from '@/lib/api';
 import ApiPage from '@/lib/page';
 import ShopLayout from '@/Layouts/ShopLayout';
 import AdminLayout from '@/Layouts/AdminLayout';
+import ErrorBoundary from '@/Components/ErrorBoundary';
+import SetupScreen from '@/Components/SetupScreen';
+import { isConfigured } from '@/lib/supabase';
 
 // Chaque page est chargée à la demande : le premier affichage reste léger sur mobile
 const Home = lazy(() => import('@/Pages/Home'));
@@ -39,7 +42,15 @@ function shop(component, load, extra = {}) {
     return <ApiPage component={component} load={load} shell={ShopShell} {...extra} />;
 }
 function admin(component, load, extra = {}) {
-    return <ApiPage component={component} load={load} shell={AdminShell} {...extra} />;
+    return <RequireStaff><ApiPage component={component} load={load} shell={AdminShell} {...extra} /></RequireStaff>;
+}
+
+/** Redirige vers la connexion avant tout appel à la base. */
+function RequireStaff({ children }) {
+    const auth = useAuth();
+    const location = useLocation();
+    if (!auth.isLoggedIn) return <Navigate to="/admin/connexion" replace state={{ from: location.pathname }} />;
+    return children;
 }
 
 function ScrollToTop() {
@@ -113,12 +124,16 @@ function NotFound() {
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
-        <BrowserRouter>
-            <ShopProvider>
-                <AuthProvider>
-                    <App />
-                </AuthProvider>
-            </ShopProvider>
-        </BrowserRouter>
+        <ErrorBoundary>
+            {isConfigured ? (
+                <BrowserRouter>
+                    <ShopProvider>
+                        <AuthProvider>
+                            <App />
+                        </AuthProvider>
+                    </ShopProvider>
+                </BrowserRouter>
+            ) : <SetupScreen />}
+        </ErrorBoundary>
     </StrictMode>,
 );

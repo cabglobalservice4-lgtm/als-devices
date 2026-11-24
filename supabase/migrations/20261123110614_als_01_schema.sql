@@ -106,7 +106,7 @@ create table public.als_delivery_zones (
   updated_at timestamptz not null default now()
 );
 
-create sequence public.als_order_seq;
+create sequence if not exists public.als_order_seq;
 
 create table public.als_orders (
   id bigint generated always as identity primary key,

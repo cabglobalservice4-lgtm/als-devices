@@ -57,6 +57,18 @@ Les scripts sont dans `supabase/` et **sont déjà appliqués** sur le projet `p
 
 Pour un nouveau projet Supabase : exécuter les trois migrations puis `seed.sql` dans *SQL Editor*.
 
+## Qualité
+
+```bash
+cd frontend
+npm test        # tests automatiques (prix, panier, import CSV, sécurité du texte des pages…)
+npm run build   # site + pages pré-rendues pour Google/WhatsApp (dist/)
+```
+
+- Sans les variables Supabase, le site affiche un écran qui explique quoi régler sur Vercel (au lieu d'une page cassée).
+- Les photos sont réduites dans le navigateur avant l'envoi (WebP, 1600 px) : une photo de 6 Mo passe à environ 300 Ko.
+- Après une commande, le client envoie le détail complet à la boutique sur WhatsApp en un clic.
+
 ## Ce que fait le site
 
 | Côté client | Côté back-office (`/admin`) |
@@ -71,5 +83,4 @@ Pour un nouveau projet Supabase : exécuter les trois migrations puis `seed.sql`
 
 - **E-mails** : pas d'e-mail automatique au client ni d'alerte de commande. Les nouvelles commandes apparaissent dans le tableau de bord ; le client garde sa page de suivi et sa facture. *Suite possible : une Edge Function Supabase + Resend.*
 - **Facture** : page imprimable (« Enregistrer en PDF » du navigateur) au lieu d'un PDF joint par e-mail.
-- **Sitemap et flux Facebook** : générés à chaque déploiement Vercel ; redéployer pour les mettre à jour après de gros changements de catalogue.
-- **Aperçu WhatsApp/Facebook** d'une fiche produit : titre générique (le site est rendu dans le navigateur).
+- **Pages pré-rendues, sitemap et flux Facebook** : générés à chaque déploiement Vercel (titre, prix, photo de chaque fiche pour Google, WhatsApp et Facebook). Redéployez après avoir ajouté des produits pour qu'ils y apparaissent ; le site lui-même est toujours à jour.

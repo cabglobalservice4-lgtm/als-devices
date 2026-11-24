@@ -7,6 +7,17 @@ import { route } from '@/lib/routes';
 
 const flow = ['new', 'confirmed', 'shipped', 'delivered'];
 
+/** Message WhatsApp prêt à envoyer : la boutique voit tout de suite le détail de la commande. */
+function orderMessage(order, money) {
+    return [
+        `Bonjour ALS Devices, je viens de passer la commande ${order.number}.`,
+        ...order.items.map((i) => `• ${i.quantity} × ${i.product_name}${i.variant_label ? ` (${i.variant_label})` : ''}`),
+        `Total : ${money(order.total)} · ${order.payment_label}`,
+        order.delivery_method === 'pickup' ? 'Retrait / remise en main propre' : `Livraison : ${order.zone ?? ''}${order.address ? ` — ${order.address}` : ''}`,
+        `Suivi : ${window.location.origin}/commande/${order.token}`,
+    ].join('\n');
+}
+
 export default function OrderConfirmation({ order, instructions, statuses }) {
     const { shop } = usePage().props;
     const money = useMoney();
@@ -48,7 +59,7 @@ export default function OrderConfirmation({ order, instructions, statuses }) {
                     {order.tracking_number && <p className="rounded-xl bg-bone px-4 py-3">Suivi du colis : <span className="font-mono font-semibold">{order.tracking_number}</span></p>}
 
                     <div className="flex flex-wrap gap-3">
-                        <a href={waLink(shop.whatsapp, `Bonjour ALS Devices, je viens de passer la commande ${order.number}.`)} target="_blank" rel="noopener" className="btn-wa"><WhatsAppGlyph /> Nous écrire</a>
+                        <a href={waLink(shop.whatsapp, orderMessage(order, money))} target="_blank" rel="noopener" className="btn-wa"><WhatsAppGlyph /> Envoyer ma commande sur WhatsApp</a>
                         <Link href={route('orders.invoice', order.token)} className="btn-ghost"><Icon name="download" className="h-4 w-4" /> Facture</Link>
                         <Link href={route('catalog.index')} className="btn-ghost">Continuer mes achats</Link>
                     </div>

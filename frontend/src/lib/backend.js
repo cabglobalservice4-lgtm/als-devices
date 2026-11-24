@@ -5,6 +5,7 @@
  * La sécurité est dans la base : règles RLS + fonctions (commande, stock, équipe).
  */
 import { BUCKET, imageUrl, supabase } from './supabase';
+import { compressImage } from './image';
 
 // --- Erreurs ----------------------------------------------------------------
 export class ApiError extends Error {
@@ -51,7 +52,7 @@ const PRODUCT_SELECT = 'id, name, slug, condition, grade, battery_health, warran
 const activeVariants = (p) => (p.variants || []).filter((v) => v.is_active).sort((a, b) => a.price - b.price);
 const sortedImages = (p) => [...(p.images || [])].sort((a, b) => a.position - b.position);
 
-function card(p) {
+export function card(p) {
     const vs = activeVariants(p);
     const cheapest = vs[0];
     const colors = [];
@@ -323,7 +324,7 @@ async function placeOrder(data) {
     return { ...res, total: Number(res.total), redirect: null };
 }
 
-function paymentInstructions(order, s) {
+export function paymentInstructions(order, s) {
     const fmt = (n) => `${new Intl.NumberFormat('fr-FR').format(n).replace(/ /g, ' ')} ${s.currency_symbol || 'FCFA'}`;
     if (order.payment_method === 'wave') return `Envoyez ${fmt(order.total)} par Wave au ${s.wave_number || '(numéro à configurer)'} en indiquant la référence ${order.number}. Votre commande est confirmée dès réception.`;
     if (order.payment_method === 'orange_money') return `Envoyez ${fmt(order.total)} par Orange Money au ${s.om_number || '(numéro à configurer)'} en indiquant la référence ${order.number}. Votre commande est confirmée dès réception.`;
@@ -461,17 +462,18 @@ function validateProduct(d) {
         if (v.price === '' || Number(v.price) < 0 || Number.isNaN(Number(v.price))) errors[`variants.${i}.price`] = 'Prix invalide.';
         if (v.compare_at_price !== '' && v.compare_at_price != null && Number(v.compare_at_price) <= Number(v.price)) errors[`variants.${i}.compare_at_price`] = 'Le prix barré doit être supérieur au prix.';
     });
-    (d.images || []).forEach((f, i) => { if (f.size > 5 * 1024 * 1024) errors[`images.${i}`] = `${f.name} dépasse 5 Mo.`; });
+    (d.images || []).forEach((f, i) => { if (!/^image\/(jpeg|png|webp)$/.test(f.type)) errors[`images.${i}`] = `${f.name} : format non accepté (JPG, PNG ou WebP).`; });
     if (Object.keys(errors).length) throw new ApiError(422, { message: 'Vérifiez le formulaire.', errors });
 }
 
 async function uploadImages(productId, files = [], startPosition = 0) {
     let position = startPosition;
-    for (const file of files) {
+    for (const original of files) {
+        const file = await compressImage(original);
         const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
         const path = `products/${productId}/${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from(BUCKET).upload(path, file, { contentType: file.type, upsert: false });
-        if (error) throw new ApiError(422, { message: `Envoi de ${file.name} impossible : ${error.message}` });
+        if (error) throw new ApiError(422, { message: `Envoi de ${original.name} impossible : ${error.message}` });
         must(await supabase.from('als_product_images').insert({ product_id: productId, path, alt: null, position: ++position }));
     }
 }
@@ -507,7 +509,7 @@ async function deleteImage(id) {
 }
 
 // --- Import CSV --------------------------------------------------------------
-function parseCsv(text) {
+export function parseCsv(text) {
     text = text.replace(/^﻿/, '');
     const firstLine = text.split(/\r?\n/)[0] || '';
     const sep = (firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length ? ';' : ',';
