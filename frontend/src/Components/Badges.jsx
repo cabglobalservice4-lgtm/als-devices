@@ -2,9 +2,9 @@ import { cx } from '@/lib/format';
 
 export function GradeStamp({ grade, size = 'md' }) {
     if (!grade) return null;
-    const s = size === 'lg' ? 'h-14 w-14 text-3xl' : 'h-9 w-9 text-lg';
+    const s = size === 'lg' ? 'h-16 w-16 text-5xl' : 'h-9 w-9 text-2xl';
     return (
-        <span className={cx('inline-flex items-center justify-center rounded-md border-2 border-ink bg-white font-display font-extrabold leading-none text-ink', s)} title={`Grade ${grade}`}>
+        <span className={cx('inline-grid shrink-0 place-items-center rounded-md border-2 border-current font-display font-black leading-none', s)} style={{ fontVariationSettings: "'wdth' 62" }} title={`Grade ${grade}`}>
             {grade}
         </span>
     );
@@ -13,9 +13,8 @@ export function GradeStamp({ grade, size = 'md' }) {
 export function ConditionPill({ condition, grade, className = '' }) {
     const refurb = condition === 'refurbished';
     return (
-        <span className={cx('eyebrow inline-flex items-center gap-1.5 rounded-full px-2.5 py-1', refurb ? 'bg-ink text-white' : 'bg-als text-white', className)}>
-            <span className={cx('h-1.5 w-1.5 rounded-full', refurb ? 'bg-als' : 'bg-white')} />
-            {refurb ? `Reconditionné${grade ? ' · ' + grade : ''}` : 'Neuf'}
+        <span className={cx('inline-flex items-center rounded-[4px] px-2 py-1 text-xs font-bold leading-none', refurb ? 'bg-ink text-white' : 'bg-als text-white', className)}>
+            {refurb ? `Reconditionné${grade ? ' grade ' + grade : ''}` : 'Neuf'}
         </span>
     );
 }
@@ -29,14 +28,16 @@ export function BatteryMeter({ value, dark = false }) {
                 <div className={cx('h-full rounded-[2px]', color)} style={{ width: `${value}%` }} />
                 <span className={cx('absolute -right-[4px] top-1/2 h-1.5 w-[3px] -translate-y-1/2 rounded-r-sm', dark ? 'bg-white/40' : 'bg-ink/40')} />
             </div>
-            <span className="font-mono text-sm font-semibold">{value}%</span>
+            <span className="font-mono text-sm font-bold">{value}%</span>
         </div>
     );
 }
 
 export function StockLine({ inStock, low, unique }) {
-    if (!inStock) return <span className="font-mono text-xs uppercase tracking-wider text-graphite">Épuisé</span>;
-    if (unique) return <span className="font-mono text-xs uppercase tracking-wider text-als">● Pièce unique</span>;
-    if (low) return <span className="font-mono text-xs uppercase tracking-wider text-amber-600">● Derniers exemplaires</span>;
-    return <span className="font-mono text-xs uppercase tracking-wider text-ok">● En stock</span>;
+    const base = 'inline-flex items-center gap-1.5 text-[13px] font-semibold';
+    const dot = (c) => <span className={cx('h-2 w-2 rounded-full', c)} />;
+    if (!inStock) return <span className={cx(base, 'text-graphite')}>{dot('bg-bone-300')}Épuisé</span>;
+    if (unique) return <span className={cx(base, 'text-als')}>{dot('bg-als')}Pièce unique</span>;
+    if (low) return <span className={cx(base, 'text-amber-700')}>{dot('bg-amber-500')}Derniers exemplaires</span>;
+    return <span className={cx(base, 'text-ok')}>{dot('bg-ok')}En stock</span>;
 }

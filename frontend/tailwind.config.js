@@ -1,6 +1,12 @@
 import forms from '@tailwindcss/forms';
 
-/** Charte ALS : noir, rouge, blanc. */
+/**
+ * Charte ALS : noir, rouge, blanc.
+ * Une seule famille (Archivo, axe de largeur) : condensée pour les titres
+ * et les prix, comme une enseigne de boutique ; largeur normale pour le texte.
+ */
+const archivo = ['"Archivo Variable"', 'system-ui', 'sans-serif'];
+
 export default {
     content: [
         './index.html',
@@ -9,28 +15,29 @@ export default {
     theme: {
         extend: {
             colors: {
-                ink: { DEFAULT: '#0B0B0C', 800: '#161618', 700: '#232326', 600: '#3A3A3F' },
-                als: { DEFAULT: '#E10600', dark: '#B30500', light: '#FFE9E8' },
-                bone: { DEFAULT: '#F5F3EF', 200: '#ECE9E3', 300: '#DEDAD2' },
-                graphite: '#5E5E64',
-                ok: '#1F9D55',
+                ink: { DEFAULT: '#000000', 800: '#141414', 700: '#262626', 600: '#3D3D3D' },
+                als: { DEFAULT: '#E10600', dark: '#B00500', light: '#FFE8E6' },
+                // Gris neutre du « comptoir » : fond des photos produit
+                bone: { DEFAULT: '#F1F1EF', 200: '#E5E5E2', 300: '#D2D2CE' },
+                graphite: '#5C5C5C',
+                ok: '#0E8A47',
             },
             fontFamily: {
-                display: ['"Bricolage Grotesque Variable"', 'system-ui', 'sans-serif'],
-                sans: ['"Geist Variable"', 'system-ui', 'sans-serif'],
-                mono: ['"Geist Mono Variable"', 'ui-monospace', 'monospace'],
+                display: archivo,
+                sans: archivo,
+                mono: archivo,
             },
-            letterSpacing: { tightest: '-0.045em' },
+            letterSpacing: { tightest: '-0.015em' },
             boxShadow: {
-                tag: '0 1px 0 rgba(11,11,12,.06), 0 12px 32px -12px rgba(11,11,12,.25)',
+                tag: '0 1px 2px rgba(0,0,0,.08), 0 18px 40px -18px rgba(0,0,0,.35)',
             },
             keyframes: {
-                marquee: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
+                swing: { '0%': { transform: 'rotate(7deg)' }, '60%': { transform: 'rotate(1deg)' }, '100%': { transform: 'rotate(3deg)' } },
                 rise: { from: { opacity: 0, transform: 'translateY(8px)' }, to: { opacity: 1, transform: 'none' } },
             },
             animation: {
-                marquee: 'marquee 40s linear infinite',
-                rise: 'rise .5s cubic-bezier(.2,.7,.2,1) both',
+                rise: 'rise .35s cubic-bezier(.2,.7,.2,1) both',
+                swing:'swing .9s cubic-bezier(.2,.7,.2,1) .15s both',
             },
         },
     },

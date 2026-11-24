@@ -14,7 +14,7 @@ export default function DeviceArt({ type = 'phone', color = '#1F2228', className
                     <rect x="45" y="29" width="110" height="146" rx="8" fill="#0B0B0C" />
                     <rect x="45" y="29" width="110" height="146" rx="8" fill="url(#gt)" />
                     <circle cx="100" cy="25.5" r="1.6" fill="#555" />
-                    <defs><linearGradient id="gt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#3a3a40" /><stop offset=".55" stopColor="#111" /><stop offset="1" stopColor="#E10600" stopOpacity=".55" /></linearGradient></defs>
+                    <defs><linearGradient id="gt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4a4a52" /><stop offset=".55" stopColor="#111" /><stop offset="1" stopColor="#2c2c31" /></linearGradient></defs>
                 </svg>
             );
         case 'laptop':
@@ -24,7 +24,7 @@ export default function DeviceArt({ type = 'phone', color = '#1F2228', className
                     <rect x="40" y="54" width="120" height="76" rx="3" fill="url(#gl)" />
                     <path d="M18 140h164l-8 12H26l-8-12Z" fill={body} />
                     <rect x="86" y="140" width="28" height="4" rx="2" fill="#000" opacity=".25" />
-                    <defs><linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#2b2b30" /><stop offset=".6" stopColor="#0d0d0f" /><stop offset="1" stopColor="#E10600" stopOpacity=".5" /></linearGradient></defs>
+                    <defs><linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4a4a52" /><stop offset=".6" stopColor="#0d0d0f" /><stop offset="1" stopColor="#2c2c31" /></linearGradient></defs>
                 </svg>
             );
         case 'watch':
@@ -52,7 +52,7 @@ export default function DeviceArt({ type = 'phone', color = '#1F2228', className
                     <rect x="58" y="14" width="84" height="172" rx="18" fill={body} />
                     <rect x="63" y="19" width="74" height="162" rx="13" fill="url(#gp)" />
                     <rect x="88" y="25" width="24" height="7" rx="3.5" fill="#000" />
-                    <defs><linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#34343a" /><stop offset=".55" stopColor="#0e0e10" /><stop offset="1" stopColor="#E10600" stopOpacity=".6" /></linearGradient></defs>
+                    <defs><linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#4a4a52" /><stop offset=".55" stopColor="#0e0e10" /><stop offset="1" stopColor="#2c2c31" /></linearGradient></defs>
                 </svg>
             );
     }
