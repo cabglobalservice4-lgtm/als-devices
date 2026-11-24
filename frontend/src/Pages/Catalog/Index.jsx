@@ -92,7 +92,7 @@ export default function CatalogIndex({ category, products, filters, facets }) {
                         <Link href={route('catalog.index')} className="hover:text-ink">Boutique</Link>
                         {category && <><span>/</span><span className="text-ink">{category.name}</span></>}
                     </nav>
-                    <h1 className="h-display mt-4 text-5xl md:text-7xl">{title}<span className="text-als">.</span></h1>
+                    <h1 className="h-display mt-4 text-6xl md:text-8xl">{title}</h1>
                     {category?.description && <p className="mt-4 max-w-2xl text-graphite">{category.description}</p>}
 
                     <div className="no-scrollbar -mx-4 mt-8 flex gap-2 overflow-x-auto px-4 md:mx-0 md:px-0">

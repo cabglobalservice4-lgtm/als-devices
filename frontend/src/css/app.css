@@ -1,6 +1,4 @@
-@import '@fontsource-variable/bricolage-grotesque';
-@import '@fontsource-variable/geist';
-@import '@fontsource-variable/geist-mono';
+@import '@fontsource-variable/archivo/wdth.css';
 
 @tailwind base;
 @tailwind components;
@@ -8,45 +6,55 @@
 
 @layer base {
     html { -webkit-tap-highlight-color: transparent; }
-    body { @apply bg-white text-ink; font-feature-settings: 'ss01'; }
+    body { @apply bg-white text-ink; font-stretch: 100%; }
     :focus-visible { @apply outline-none ring-2 ring-als ring-offset-2; }
     ::selection { @apply bg-als text-white; }
 }
 
 @layer components {
     .container-als { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
-    .eyebrow { @apply font-mono text-[11px] font-medium uppercase tracking-[0.16em]; }
-    .h-display { @apply font-display font-extrabold tracking-tightest leading-[0.92]; }
 
-    .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition active:scale-[.98] disabled:pointer-events-none disabled:opacity-50; }
+    /* Petit intitulé : casse normale, pas de capitales espacées */
+    .eyebrow { @apply text-[13px] font-semibold leading-tight; }
+
+    /* Titres : Archivo condensée, très grasse, serrée — comme une enseigne */
+    .h-display { @apply font-display font-extrabold tracking-tightest leading-[0.9]; font-stretch: 68%; font-variation-settings: 'wdth' 68; }
+
+    .btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-[15px] font-bold transition active:translate-y-px disabled:pointer-events-none disabled:opacity-50; }
     .btn-red { @apply btn bg-als text-white hover:bg-als-dark; }
     .btn-ink { @apply btn bg-ink text-white hover:bg-ink-700; }
-    .btn-ghost { @apply btn border border-ink/15 bg-white text-ink hover:border-ink; }
+    .btn-ghost { @apply btn border-2 border-ink bg-white text-ink hover:bg-ink hover:text-white; }
     .btn-wa { @apply btn bg-[#25D366] text-ink hover:bg-[#1fbe5b]; }
 
-    .field { @apply block w-full rounded-xl border-bone-300 bg-white px-4 py-3 text-[15px] shadow-none placeholder:text-graphite/60 focus:border-ink focus:ring-0; }
-    .label { @apply mb-1.5 block text-sm font-medium text-ink; }
+    .field { @apply block w-full rounded-lg border-bone-300 bg-white px-4 py-3 text-[15px] shadow-none placeholder:text-graphite/60 focus:border-ink focus:ring-0; }
+    .label { @apply mb-1.5 block text-sm font-semibold text-ink; }
     .error { @apply mt-1 text-sm text-als; }
 
-    .chip { @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-bone-300 bg-white px-3 py-1.5 text-sm transition hover:border-ink; }
+    .chip { @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-bone-300 bg-white px-3 py-1.5 text-sm font-medium transition hover:border-ink; }
     .chip-on { @apply border-ink bg-ink text-white hover:border-ink; }
 
-    .card-admin { @apply rounded-2xl border border-bone-200 bg-white; }
+    .card-admin { @apply rounded-xl border border-bone-200 bg-white; }
 
-    .prose-als h2 { @apply mt-8 font-display text-2xl font-bold tracking-tight; }
+    /* Étiquette de prix : le trou de perforation est découpé dans la forme */
+    .tag-hole { -webkit-mask: radial-gradient(circle at 14px 50%, transparent 4px, #000 4.5px); mask: radial-gradient(circle at 14px 50%, transparent 4px, #000 4.5px); }
+
+    .prose-als h2 { @apply mt-8 font-display text-3xl font-extrabold tracking-tight; }
     .prose-als p, .prose-als li { @apply mt-3 leading-relaxed text-ink/80; }
     .prose-als ul { @apply list-disc pl-5; }
     .prose-als strong { @apply text-ink; }
 }
 
 @layer utilities {
+    /* Toute utilisation de font-display passe en condensé */
+    .font-display { font-stretch: 72%; font-variation-settings: 'wdth' 72; }
+    /* Les chiffres (prix, stockage, SKU) restent alignés */
+    .font-mono { font-variant-numeric: tabular-nums; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { scrollbar-width: none; }
-    .tick-grid { background-image: linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 48px 48px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .animate-marquee, .animate-rise { animation: none !important; }
+    .animate-swing, .animate-rise { animation: none !important; }
 }
 
 @media print {

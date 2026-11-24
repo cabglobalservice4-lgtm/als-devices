@@ -93,14 +93,14 @@ export default function ProductShow({ product, reviews, related, grades }) {
                 {/* GALERIE */}
                 <div className="lg:col-span-7">
                     <div className="lg:sticky lg:top-24">
-                        <div className="relative aspect-square overflow-hidden rounded-3xl bg-bone">
+                        <div className="relative aspect-square overflow-hidden rounded-xl bg-bone">
                             {images ? (
                                 <img src={images[img].url} alt={images[img].alt} className="h-full w-full object-contain p-8 mix-blend-multiply" />
                             ) : (
                                 <div className="h-full p-16"><DeviceArt type={product.category_icon} color={variant?.color_hex} /></div>
                             )}
                             <div className="absolute left-4 top-4"><ConditionPill condition={product.condition} grade={product.grade} /></div>
-                            {discount > 0 && <span className="absolute right-4 top-4 rounded-full bg-als px-3 py-1.5 font-mono text-xs font-bold text-white">−{discount}%</span>}
+                            {discount > 0 && <span className="tag-hole absolute right-0 top-5 rounded-l-md bg-als py-2 pl-8 pr-4 font-display text-2xl font-black leading-none text-white">−{discount}%</span>}
                         </div>
                         {images && images.length > 1 && (
                             <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
@@ -118,11 +118,11 @@ export default function ProductShow({ product, reviews, related, grades }) {
                 {/* ACHAT */}
                 <div className="lg:col-span-5">
                     <p className="eyebrow text-graphite">{product.brand}</p>
-                    <h1 className="h-display mt-2 text-4xl md:text-5xl">{product.name}</h1>
+                    <h1 className="h-display mt-2 text-6xl md:text-7xl">{product.name}</h1>
                     {product.short_description && <p className="mt-4 leading-relaxed text-graphite">{product.short_description}</p>}
 
                     <div className="mt-6 flex items-baseline gap-3">
-                        <span className="font-display text-4xl font-extrabold tracking-tight">{money(variant?.price)}</span>
+                        <span className="font-display text-5xl font-black leading-none tracking-tight">{money(variant?.price)}</span>
                         {variant?.compare_at_price && <span className="text-lg text-graphite line-through">{money(variant.compare_at_price)}</span>}
                     </div>
                     <div className="mt-2"><StockLine inStock={!soldOut} low={variant?.low_stock} unique={product.is_unique} /></div>
@@ -135,7 +135,7 @@ export default function ProductShow({ product, reviews, related, grades }) {
                                     const available = inStockFor(s);
                                     return (
                                         <button key={s} type="button" onClick={() => { setStorage(s); if (!exists(s, color)) setColor(variants.find((v) => v.storage === s)?.color ?? null); }}
-                                            className={cx('rounded-xl border-2 px-4 py-2.5 font-mono text-sm font-semibold transition', storage === s ? 'border-ink bg-ink text-white' : 'border-bone-300 hover:border-ink', !available && 'opacity-40 line-through')}>
+                                            className={cx('rounded-lg border-2 px-4 py-2.5 text-sm font-bold transition', storage === s ? 'border-ink bg-ink text-white' : 'border-bone-300 hover:border-ink', !available && 'opacity-40 line-through')}>
                                             {s}
                                         </button>
                                     );
@@ -172,7 +172,7 @@ export default function ProductShow({ product, reviews, related, grades }) {
                     </a>
 
                     {/* FICHE DE CONTRÔLE */}
-                    <div className="mt-8 overflow-hidden rounded-2xl border-2 border-ink">
+                    <div className="mt-8 overflow-hidden rounded-xl border-2 border-ink">
                         <div className="flex items-center justify-between bg-ink px-5 py-3 text-white">
                             <span className="eyebrow">Fiche de contrôle ALS</span>
                             <span className="font-mono text-xs text-white/60">{variant?.sku}</span>
@@ -195,7 +195,7 @@ export default function ProductShow({ product, reviews, related, grades }) {
 
                     <ul className="mt-6 grid grid-cols-2 gap-3 text-sm">
                         {[['truck', 'Livraison 24 h à Dakar'], ['cash', 'Paiement à la livraison'], ['shield', '7 jours pour changer d\'avis'], ['chat', 'Conseil sur WhatsApp']].map(([i, t]) => (
-                            <li key={t} className="flex items-center gap-2.5 rounded-xl bg-bone px-3 py-3"><Icon name={i} className="h-5 w-5 shrink-0 text-als" />{t}</li>
+                            <li key={t} className="flex items-center gap-2.5 rounded-lg bg-bone px-3 py-3"><Icon name={i} className="h-5 w-5 shrink-0 text-als" />{t}</li>
                         ))}
                     </ul>
                 </div>
